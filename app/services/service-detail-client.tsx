@@ -1,0 +1,258 @@
+"use client"
+
+import { useSearchParams, notFound, useRouter } from "next/navigation"
+import { services } from "@/data/services"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  MapPin,
+  Navigation,
+  Star,
+  User,
+  CheckCircle,
+} from "lucide-react"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+
+export default function ServiceDetailPage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const id = searchParams.get("id")
+
+  if (!id) notFound()
+
+  const service = services.find((s) => s.id === id)
+  if (!service) notFound()
+
+  const [activeImage, setActiveImage] = useState(service.images[0])
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [date, setDate] = useState("")
+  const [time, setTime] = useState("")
+
+  return (
+    <>
+      <div className="container max-w-7xl py-10 space-y-10">
+        {/* ===== TITLE ===== */}
+        <section className="space-y-4">
+          <h1 className="text-3xl md:text-4xl font-bold">
+            {service.name}
+          </h1>
+          <p className="text-muted-foreground">{service.category}</p>
+
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <MapPin className="h-4 w-4" />
+              {service.location}
+            </span>
+            <span className="flex items-center gap-1">
+              <Navigation className="h-4 w-4" />
+              {service.distance} km away
+            </span>
+            <span className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+              {service.rating}
+            </span>
+          </div>
+        </section>
+
+        {/* ===== IMAGE GALLERY ===== */}
+        <section className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 overflow-hidden rounded-2xl border">
+            <img
+              src={activeImage}
+              alt={service.name}
+              className="w-full h-[260px] sm:h-[360px] md:h-[420px] object-cover"
+            />
+          </div>
+
+          <div className="grid grid-cols-3 lg:grid-cols-1 gap-3">
+            {service.images.map((img) => (
+              <button
+                key={img}
+                onClick={() => setActiveImage(img)}
+                className={`relative overflow-hidden rounded-xl border aspect-[6/3] ${activeImage === img
+                  ? "ring-2 ring-primary border-primary"
+                  : "hover:border-primary/50"
+                  }`}
+              >
+                <img
+                  src={img}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ===== CONTENT ===== */}
+        <section className="grid gap-10 lg:grid-cols-3">
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-8">
+            <div>
+              <h3 className="font-semibold text-lg">About this service</h3>
+              <p className="text-muted-foreground mt-2">
+                {service.description}
+              </p>
+            </div>
+
+            <div className="rounded-xl border bg-card p-6">
+              <h3 className="font-semibold mb-2">Pricing</h3>
+              {service.pricing.type === "fixed" ? (
+                <p className="text-xl font-medium">
+                  ₹{service.pricing.amount}
+                  <span className="text-sm text-muted-foreground ml-1">
+                    {service.pricing.unit}
+                  </span>
+                </p>
+              ) : (
+                <p className="text-xl font-medium">
+                  ₹{service.pricing.min} – ₹{service.pricing.max}
+                  <span className="text-sm text-muted-foreground ml-1">
+                    {service.pricing.unit}
+                  </span>
+                </p>
+              )}
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-lg mb-3">
+                What’s included
+              </h3>
+              <ul className="grid sm:grid-cols-2 gap-3 text-sm">
+                {service.inclusions.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 bg-primary rounded-full" />
+                    <span className="text-muted-foreground">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {service.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <aside className="rounded-2xl border bg-card p-6 space-y-5">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+                <User className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-semibold">
+                  {service.provider.name}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {service.provider.experience}+ years experience
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="font-medium">
+                  {service.provider.completedJobs}+
+                </p>
+                <p className="text-muted-foreground">
+                  Jobs done
+                </p>
+              </div>
+              <div>
+                <p className="font-medium">
+                  {service.rating} ★
+                </p>
+                <p className="text-muted-foreground">
+                  Rating
+                </p>
+              </div>
+            </div>
+
+            <div className="text-sm text-muted-foreground">
+              Languages:{" "}
+              <span className="text-foreground">
+                {service.provider.languages.join(", ")}
+              </span>
+            </div>
+
+            {service.provider.verified && (
+              <div className="flex items-center gap-2 text-green-600 text-sm">
+                <CheckCircle className="h-4 w-4" />
+                Verified provider
+              </div>
+            )}
+
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => setIsBookingOpen(true)}
+            >
+              Book Service
+            </Button>
+          </aside>
+        </section>
+      </div>
+
+      {/* ===== BOOKING MODAL ===== */}
+      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Book Service</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <Input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+
+            <Input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+
+            <Button
+              className="w-full"
+              disabled={!date || !time}
+              onClick={() => {
+                // (optional) store booking details temporarily
+                sessionStorage.setItem(
+                  "booking",
+                  JSON.stringify({
+                    serviceId: service.id,
+                    date,
+                    time,
+                  })
+                )
+
+                setIsBookingOpen(false)
+
+                // 👉 redirect to payments page with service id
+                router.push(`/payments?id=${service.id}`)
+              }}
+            >
+              Proceed to Payment
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+    </>
+  )
+}
