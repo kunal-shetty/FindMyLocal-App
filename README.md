@@ -89,24 +89,25 @@ data/
 ```
 
 ---
+
 ## **Getting Started**
-## **Prerequisites**
 
-Node.js 18+
+### **Prerequisites**
 
-npm / yarn / pnpm
+* Node.js 18+
+* npm / yarn / pnpm
 
-Installation
-```
-git clone <repository-url>
+### **Installation**
+
+```bash
+git clone https://github.com/kunal-shetty/FindMyLocal-App.git
 cd findmylocal-app
 npm install
 ```
 
-
 ## **Environment Setup**
 
-Create a .env.local file in the root directory and add your Resend API key:
+Create a .env file in the root directory and add your Resend API key:
 ```
 RESEND_API_KEY=your_resend_api_key_here
 ```
@@ -114,29 +115,32 @@ RESEND_API_KEY=your_resend_api_key_here
 This API key is used for email-based OTP authentication.
 You can generate the key from: https://resend.com/api-keys
 
-**Run Locally**
-```npm run dev
+### **Run Locally**
+
+```bash
+npm run dev
 ```
 
-Open http://localhost:3000 in your browser.
+Open `http://localhost:3000` in your browser.
 
-Firebase Hosting
+---
 
-The project is deployed using Firebase Hosting
+### **Firebase Hosting**
 
-Routing is handled using rewrite rules for SPA behavior
+* The project is deployed using Firebase Hosting
+* Routing is handled using rewrite rules for SPA behavior
 
-Authentication Flow (Prototype)
+---
 
-Email is entered on the login page
+## **Authentication Flow (Prototype)**
 
-OTP is generated and sent via email (simulated for prototype)
+1. Email is entered on login page
+2. OTP is generated and sent (simulated for prototype)
+3. OTP verification
+4. Role selection (new users)
+5. Redirect based on role
 
-OTP verification
-
-Role selection for new users
-
-Redirect based on selected role
+---
 
 ## **Dummy Data**
 
