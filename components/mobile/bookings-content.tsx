@@ -114,15 +114,23 @@ export function MobileBookingsContent() {
                     <Card key={index} className="bg-card border-border/50 overflow-hidden">
                       <CardContent className="p-0">
                         <div className="flex">
-                          <div className="w-24 h-24 bg-muted flex-shrink-0">
+                          <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg border border-border/60 relative">
                             <Image
-                              src={`/placeholder.svg?height=96&width=96&query=${service.category} service`}
+                              src={
+                                service.images?.[1] && service.images[1].trim() !== ""
+                                  ? service.images[1]
+                                  : "/placeholder-service.jpg"
+                              }
                               alt={service.name}
                               width={96}
                               height={96}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
                             />
+
+                            {/* subtle overlay for better contrast */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
                           </div>
+
 
                           <div className="flex-1 p-3">
                             <div className="flex items-start justify-between">
@@ -200,13 +208,13 @@ export function MobileBookingsContent() {
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div className="space-y-0.5">
-  <h3 className="font-medium text-foreground line-clamp-2">
-    {service.name}
-  </h3>
-  <p className="text-sm text-muted-foreground truncate">
-    {service.provider.name}
-  </p>
-</div>
+                            <h3 className="font-medium text-foreground line-clamp-2">
+                              {service.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground truncate">
+                              {service.provider.name}
+                            </p>
+                          </div>
 
                           <Badge variant="secondary" className="bg-muted">
                             Completed
@@ -240,16 +248,16 @@ export function MobileBookingsContent() {
                           </Button>
                         ) : (
                           <div className="flex items-center gap-1 mt-3 text-sm text-muted-foreground">
-  <span>Your rating: </span>
-  <div className="flex items-center gap-0.5">
-    {Array.from({ length: alreadyRated }).map((_, i) => (
-      <Star
-        key={i}
-        className="w-4 h-4 text-yellow-500 fill-yellow-500"
-      />
-    ))}
-  </div>
-</div>
+                            <span>Your rating: </span>
+                            <div className="flex items-center gap-0.5">
+                              {Array.from({ length: alreadyRated }).map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className="w-4 h-4 text-yellow-500 fill-yellow-500"
+                                />
+                              ))}
+                            </div>
+                          </div>
 
                         )}
                       </CardContent>
