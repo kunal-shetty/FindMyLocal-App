@@ -6,13 +6,14 @@ import { ServiceDetailAdmin } from "./service-detail"
 
 
 
+
 export default function ServicesPage() {
   return (
     <ThemeProvider>
       <ServiceProvider>
         <div className="min-h-screen bg-background">
           <main className="container mx-auto px-4 py-8 max-w-7xl">
-            <ServiceDetailAdmin />
+            <ServiceDetailAdmin/>
           </main>
         </div>
       </ServiceProvider>
