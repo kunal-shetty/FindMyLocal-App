@@ -1,262 +1,222 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useServices } from "@/context/service-context"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { useSearchParams, notFound, useRouter } from "next/navigation"
+import { services } from "@/data/services"
 import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button"
+import {
+  MapPin,
+  Navigation,
+  Star,
+  User,
+  CheckCircle,
+  Phone,
+  MessageCircle,
+  Calendar,
+  Clock,
+} from "lucide-react"
+import { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { ArrowLeft, Star, MapPin, Shield, Heart, Share2, Check, Calendar, Clock, Phone, MessageCircle } from "lucide-react"
-import Image from "next/image"
 
-export function ServiceDetailAdmin() {
-  const router = useRouter()
+export default function AdminServiceDetailPage() {
   const searchParams = useSearchParams()
-const serviceId = searchParams.get("id")
+  const router = useRouter()
+  const id = searchParams.get("id")
 
-  const { services, addToComparison, comparison, addBooking } = useServices()
-  const [isBookingOpen, setIsBookingOpen] = useState(false)
-  const [selectedDate, setSelectedDate] = useState("")
-  const [selectedTime, setSelectedTime] = useState("")
-  const [isLiked, setIsLiked] = useState(false)
-  const [bookingSuccess, setBookingSuccess] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+  if (!id) notFound()
 
-  const service = services.find((s) => s.id === serviceId)
-  const isInComparison = comparison.some((s) => s.id === serviceId)
+  const service = services.find((s) => s.id === id)
+  if (!service) notFound()
 
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.style.opacity = "1"
-    }
-    // Load favorite status
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]")
-    setIsLiked(favorites.includes(serviceId))
-  }, [serviceId])
-
-  const toggleFavorite = () => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]")
-    if (isLiked) {
-      const updated = favorites.filter((id: string) => id !== serviceId)
-      localStorage.setItem("favorites", JSON.stringify(updated))
-      setIsLiked(false)
-    } else {
-      localStorage.setItem("favorites", JSON.stringify([...favorites, serviceId]))
-      setIsLiked(true)
-    }
-  }
-
-  if (!service) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-background">
-        <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-            <Calendar className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h2 className="text-xl font-semibold mb-2">Service Not Found</h2>
-          <p className="text-muted-foreground mb-6">The service you&apos;re looking for doesn&apos;t exist.</p>
-          <Button onClick={() => router.push("/mobile/discover")}>Browse Services</Button>
-        </div>
-      </div>
-    )
-  }
-
-  const handleBooking = () => {
-    if (selectedDate && selectedTime) {
-      addBooking({
-        serviceId: service.id,
-        date: selectedDate,
-        time: selectedTime,
-      })
-      setBookingSuccess(true)
-      setTimeout(() => {
-        setIsBookingOpen(false)
-        setBookingSuccess(false)
-        router.push("/mobile/bookings")
-      }, 1500)
-    }
-  }
-
-  const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"]
+    const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"]
 
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
   const minDate = tomorrow.toISOString().split("T")[0]
 
+  const [activeImage, setActiveImage] = useState(service.images[0])
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [date, setDate] = useState("")
+  const [time, setTime] = useState("")
+
   return (
-    <div ref={containerRef} className="min-h-screen bg-background pb-14 opacity-0 transition-opacity duration-300">
-      {/* Header Image */}
-      <div className="relative h-72 bg-muted">
-        <Image
-        src={
-            service.images?.[0] && service.images[0].trim() !== ""
-              ? service.images[0]
-              : "/placeholder-service.jpg"
-          }          alt={service.name}
-                  fill
-                  className="object-cover"
-                />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+    <>
+      <div className="container max-w-7xl py-10 space-y-10">
+        {/* ===== TITLE ===== */}
+        <section className="space-y-4">
+          <h1 className="text-3xl md:text-4xl font-bold">
+            {service.name}
+          </h1>
+          <p className="text-muted-foreground">{service.category}</p>
 
-        {/* Top Actions */}
-        <div
-          className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between"
-          style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)" }}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full bg-background/80 backdrop-blur-sm"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full bg-background/80 backdrop-blur-sm"
-              onClick={toggleFavorite}
-            >
-              <Heart className={cn("w-5 h-5 transition-colors", isLiked && "fill-red-500 text-red-500")} />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full bg-background/80 backdrop-blur-sm">
-              <Share2 className="w-5 h-5" />
-            </Button>
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <MapPin className="h-4 w-4" />
+              {service.location}
+            </span>
+            <span className="flex items-center gap-1">
+              <Navigation className="h-4 w-4" />
+              {service.distance} km away
+            </span>
+            <span className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+              {service.rating}
+            </span>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Content */}
-      <div className=" -mt-10 relative z-10">
-        {/* Main Info */}
-        <Card className="mb-4 bg-card border-border/50 shadow-lg">
-          <CardContent className="p-5">
-            <div className="flex items-start justify-between mb-3">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-0">
-                {service.category}
-              </Badge>
-              <Badge
-                variant="secondary"
-                className={cn(
-                  "border-0",
-                  service.availability === "Available"
-                    ? "bg-green-500/20 text-green-400"
-                    : service.availability === "Busy"
-                      ? "bg-yellow-500/20 text-yellow-400"
-                      : "bg-muted text-muted-foreground",
-                )}
+        {/* ===== IMAGE GALLERY ===== */}
+        <section className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 overflow-hidden rounded-2xl border">
+            <img
+              src={activeImage}
+              alt={service.name}
+              className="w-full h-[260px] sm:h-[360px] md:h-[420px] object-cover"
+            />
+          </div>
+
+          <div className="grid grid-cols-3 lg:grid-cols-1 gap-3">
+            {service.images.map((img) => (
+              <button
+                key={img}
+                onClick={() => setActiveImage(img)}
+                className={`relative overflow-hidden rounded-xl border aspect-[6/3] ${activeImage === img
+                  ? "ring-2 ring-primary border-primary"
+                  : "hover:border-primary/50"
+                  }`}
               >
-                {service.availability}
-              </Badge>
+                <img
+                  src={img}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* ===== CONTENT ===== */}
+        <section className="grid gap-10 lg:grid-cols-3">
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-8">
+            <div>
+              <h3 className="font-semibold text-lg">About this service</h3>
+              <p className="text-muted-foreground mt-2">
+                {service.description}
+              </p>
             </div>
-            <h1 className="text-2xl font-bold mb-2">{service.name}</h1>
-            <p className="text-muted-foreground mb-4">{service.provider.name}</p>
 
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1.5">
-                <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                <span className="font-semibold">{service.rating}</span>
-                <span className="text-muted-foreground">({service.provider.completedJobs} jobs)</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <MapPin className="w-4 h-4" />
-                <span>{service.distance}km away</span>
-              </div>
+            <div className="rounded-xl border bg-card p-6">
+              <h3 className="font-semibold mb-2">Pricing</h3>
+              {service.pricing.type === "fixed" ? (
+                <p className="text-xl font-medium">
+                  ₹{service.pricing.amount}
+                  <span className="text-sm text-muted-foreground ml-1">
+                    {service.pricing.unit}
+                  </span>
+                </p>
+              ) : (
+                <p className="text-xl font-medium">
+                  ₹{service.pricing.min} – ₹{service.pricing.max}
+                  <span className="text-sm text-muted-foreground ml-1">
+                    {service.pricing.unit}
+                  </span>
+                </p>
+              )}
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Pricing */}
-        <Card className="mb-4 bg-card border-border/50">
-          <CardContent className="p-5">
-            <h2 className="font-semibold mb-2">Pricing</h2>
-            <p className="text-3xl font-bold text-primary">
-              {service.pricing.type === "fixed"
-                ? `₹${service.pricing.amount}`
-                : `₹${service.pricing.min} - ₹${service.pricing.max}`}
-              <span className="text-sm font-normal text-muted-foreground ml-2">{service.pricing.unit}</span>
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Description */}
-        <Card className="mb-4 bg-card border-border/50">
-          <CardContent className="p-5">
-            <h2 className="font-semibold mb-3">About this Service</h2>
-            <p className="text-muted-foreground leading-relaxed">{service.description}</p>
-          </CardContent>
-        </Card>
-
-        {/* Tags */}
-        {service.tags.length > 0 && (
-          <Card className="mb-4 bg-card border-border/50">
-            <CardContent className="p-5">
-              <h2 className="font-semibold mb-3">Tags</h2>
-              <div className="flex flex-wrap gap-2">
-                {service.tags.map((tag, i) => (
-                  <Badge key={i} variant="secondary" className="bg-muted">
-                    {tag}
-                  </Badge>
+            <div>
+              <h3 className="font-semibold text-lg mb-3">
+                What’s included
+              </h3>
+              <ul className="grid sm:grid-cols-2 gap-3 text-sm">
+                {service.inclusions.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 bg-primary rounded-full" />
+                    <span className="text-muted-foreground">
+                      {item}
+                    </span>
+                  </li>
                 ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              </ul>
+            </div>
 
-        {/* Provider Info */}
-        <Card className="mb-4 bg-card border-border/50">
-          <CardContent className="p-5">
-            <h2 className="font-semibold mb-4">Service Provider</h2>
-            <div className="flex items-center gap-4 mb-4">
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                style={{
-                  background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
-                }}
-              >
-                {service.provider.name.charAt(0)}
+            <div className="flex flex-wrap gap-2">
+              {service.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <aside className="rounded-2xl border bg-card p-6 space-y-5">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+                <User className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-semibold">{service.provider.name}</p>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  {service.provider.verified && (
-                    <div className="flex items-center gap-1 text-green-500">
-                      <Shield className="w-4 h-4" />
-                      <span>Verified</span>
-                    </div>
-                  )}
-                </div>
+                <p className="font-semibold">
+                  {service.provider.name}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {service.provider.experience}+ years experience
+                </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-1">Experience</p>
-                <p className="font-semibold">{service.provider.experience} years</p>
+
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="font-medium">
+                  {service.provider.completedJobs}+
+                </p>
+                <p className="text-muted-foreground">
+                  Jobs done
+                </p>
               </div>
-              <div className="p-4 rounded-xl bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-1">Jobs Completed</p>
-                <p className="font-semibold">{service.provider.completedJobs}+</p>
+              <div>
+                <p className="font-medium">
+                  {service.rating} ★
+                </p>
+                <p className="text-muted-foreground">
+                  Rating
+                </p>
               </div>
             </div>
-            {service.provider.languages.length > 0 && (
-              <div className="mt-3 p-4 rounded-xl bg-muted/50">
-                <p className="text-xs text-muted-foreground mb-1">Languages</p>
-                <p className="font-semibold">{service.provider.languages.join(", ")}</p>
+
+            <div className="text-sm text-muted-foreground">
+              Languages:{" "}
+              <span className="text-foreground">
+                {service.provider.languages.join(", ")}
+              </span>
+            </div>
+
+            {service.provider.verified && (
+              <div className="flex items-center gap-2 text-green-600 text-sm">
+                <CheckCircle className="h-4 w-4" />
+                Verified provider
               </div>
             )}
-            
-            {/* Contact Actions */}
-            <div className="mt-4 pt-4 border-t border-border/50 space-y-2">
-              <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                <span>Contact Provider</span>
+
+            {/* Contact Info */}
+            <div className="pt-4 border-t space-y-3">
+              <div className="text-sm">
+                <p className="text-muted-foreground mb-2">Contact Provider</p>
+                <p className="font-medium">{service.provider.phone}</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
-                  className="h-11 rounded-xl bg-transparent border-green-500/30 hover:bg-green-500/10"
+                  className="w-full border-green-500/30 hover:bg-green-500/10"
                   asChild
                 >
                   <a
@@ -270,7 +230,7 @@ const serviceId = searchParams.get("id")
                 </Button>
                 <Button
                   variant="outline"
-                  className="h-11 rounded-xl bg-transparent"
+                  className="w-full"
                   asChild
                 >
                   <a href={`tel:${service.provider.phone.replace(/[^0-9+]/g, "")}`}>
@@ -280,62 +240,105 @@ const serviceId = searchParams.get("id")
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Inclusions */}
-        <Card className="mb-4 bg-card border-border/50">
-          <CardContent className="p-5">
-            <h2 className="font-semibold mb-4">What&apos;s Included</h2>
-            <ul className="space-y-3">
-              {service.inclusions.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-3 h-3 text-green-500" />
-                  </div>
-                  <span className="text-muted-foreground">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+            <Button
+              size="lg"
+              className="w-full"
+              onClick={() => setIsBookingOpen(true)}
+            >
+              Book Service
+            </Button>
+          </aside>
+        </section>
       </div>
 
-      {/* Fixed Bottom Actions */}
-      <div
-        className="fixed bottom-0 left-0 right-0 p-4 bg-card/95 backdrop-blur-xl border-t border-border/50 z-10"
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
+      {/* ===== BOOKING MODAL ===== */}
+      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Book Service</DialogTitle>
+          </DialogHeader>
+
+          <div>
+  <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+    <Clock className="w-4 h-4" />
+    Select Time
+  </h3>
+
+  <div className="grid grid-cols-4 gap-2">
+    {timeSlots.map((slot) => (
+      <Button
+        key={slot}
+        variant={slot === time ? "default" : "outline"}
+        size="sm"
+        onClick={() => setTime(slot)}
+        className={cn(
+          "rounded-xl h-11",
+          slot === time && "bg-primary text-primary-foreground"
+        )}
       >
-        <div className="flex gap-3">
-     <Button
-                className="flex-1 h-12 rounded-xl text-base font-medium "
-                style={{
-                  background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
-                }}
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Approve
-              </Button>
-                   <Button
-                className="flex-1 h-12 rounded-xl text-base font-medium "
-                style={{
-                  background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
-                }}
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Reject
-              </Button>
-                   <Button
-                className="flex-1 h-12 rounded-xl text-base font-medium "
-                style={{
-                  background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
-                }}
-              >
-                <Calendar className="w-5 h-5 mr-2" />
-                Delete
-              </Button>
-        </div>
-      </div>
-    </div>
+        {slot}
+      </Button>
+    ))}
+  </div>
+  
+</div>
+
+
+                  {/* Summary */}
+                  {date && time && (
+                    <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+                      <p className="text-sm text-muted-foreground mb-1">Booking Summary</p>
+                      <p className="font-medium">
+                        {new Date(date).toLocaleDateString("en-IN", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        at {time}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Select Date
+                    </h3>
+                    <input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full p-4 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none"
+                      min={minDate}
+                    />
+                  </div>
+                  <Button
+              className="w-full"
+              disabled={!date || !time}
+              onClick={() => {
+                // (optional) store booking details temporarily
+                sessionStorage.setItem(
+                  "booking",
+                  JSON.stringify({
+                    serviceId: service.id,
+                    date,
+                    time,
+                  })
+                )
+
+                setIsBookingOpen(false)
+
+                //  redirect to payments page with service id, date, and time
+                router.push(`/checkout?amt=${service.id}&date=${date}&time=${time}`)
+              }}
+            >
+              Proceed to Payment
+            </Button>
+        </DialogContent>
+      </Dialog>
+
+    </>
   )
-} 
+}
