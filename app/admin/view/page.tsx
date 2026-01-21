@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ServiceProvider, useServices } from "@/context/service-context"
 import AdminServiceDetailPage from "./service-detail"
 
+
 export default function ServicesPage() {
   return (
     <ThemeProvider>
