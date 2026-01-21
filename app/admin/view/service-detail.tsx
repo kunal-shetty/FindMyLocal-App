@@ -285,57 +285,7 @@ export default function AdminServiceDetailPage() {
 </div>
 
 
-                  {/* Summary */}
-                  {date && time && (
-                    <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-                      <p className="text-sm text-muted-foreground mb-1">Booking Summary</p>
-                      <p className="font-medium">
-                        {new Date(date).toLocaleDateString("en-IN", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
-                        at {time}
-                      </p>
-                    </div>
-                  )}
 
-                  <div>
-                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      Select Date
-                    </h3>
-                    <input
-                      type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      className="w-full p-4 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none"
-                      min={minDate}
-                    />
-                  </div>
-                  <Button
-              className="w-full"
-              disabled={!date || !time}
-              onClick={() => {
-                // (optional) store booking details temporarily
-                sessionStorage.setItem(
-                  "booking",
-                  JSON.stringify({
-                    serviceId: service.id,
-                    date,
-                    time,
-                  })
-                )
-
-                setIsBookingOpen(false)
-
-                //  redirect to payments page with service id, date, and time
-                router.push(`/checkout?amt=${service.id}&date=${date}&time=${time}`)
-              }}
-            >
-              Proceed to Payment
-            </Button>
         </DialogContent>
       </Dialog>
 
