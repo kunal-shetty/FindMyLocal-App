@@ -17,6 +17,7 @@ export interface Service {
   category: string
   location: string
   availability: "Available" | "Busy" | "Offline"
+  status: "Pending" | "Approved" | "Rejected"
   rating: number
   distance: number
   tags: string[]
@@ -42,6 +43,7 @@ export const services: Service[] = [
     category: "Plumber",
     location: "Andheri West, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.6,
     distance: 2.3,
     tags: ["Emergency", "24x7", "Home Service"],
@@ -71,6 +73,7 @@ export const services: Service[] = [
     category: "Tutor",
     location: "Goregaon East, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.9,
     distance: 3.1,
     tags: ["CBSE", "ICSE", "1-on-1"],
@@ -99,6 +102,7 @@ export const services: Service[] = [
     category: "Electrician",
     location: "Bandra, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.7,
     distance: 1.8,
     tags: ["Licensed", "Same Day", "Commercial"],
@@ -128,6 +132,7 @@ export const services: Service[] = [
     category: "Mechanic",
     location: "Powai, Mumbai",
     availability: "Busy",
+    status: "Approved",
     rating: 4.5,
     distance: 4.2,
     tags: ["All Brands", "Doorstep", "Genuine Parts"],
@@ -157,6 +162,7 @@ export const services: Service[] = [
     category: "Painter",
     location: "Malad West, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.8,
     distance: 2.9,
     tags: ["Premium Paints", "Texture", "Waterproofing"],
@@ -186,6 +192,7 @@ export const services: Service[] = [
     category: "Carpenter",
     location: "Kandivali, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.6,
     distance: 3.5,
     tags: ["Custom Furniture", "Modular", "Repair"],
@@ -215,6 +222,7 @@ export const services: Service[] = [
     category: "Tutor",
     location: "Thane West, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.8,
     distance: 5.2,
     tags: ["JEE", "NEET", "Board Exams"],
@@ -243,6 +251,7 @@ export const services: Service[] = [
     category: "Electrician",
     location: "Vashi, Navi Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.4,
     distance: 6.1,
     tags: ["All Brands", "Gas Refill", "Installation"],
@@ -272,6 +281,7 @@ export const services: Service[] = [
     category: "Mechanic",
     location: "Dadar, Mumbai",
     availability: "Offline",
+    status: "Approved",
     rating: 4.3,
     distance: 2.1,
     tags: ["Bikes", "Scooters", "Doorstep"],
@@ -301,6 +311,7 @@ export const services: Service[] = [
     category: "Plumber",
     location: "Chembur, Mumbai",
     availability: "Busy",
+    status: "Approved",
     rating: 4.7,
     distance: 4.5,
     tags: ["Complete Renovation", "Premium Fittings", "Waterproofing"],
@@ -330,6 +341,7 @@ export const services: Service[] = [
     category: "Cleaner",
     location: "Borivali West, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.5,
     distance: 3.8,
     tags: ["Deep Cleaning", "Sanitization", "Eco-Friendly"],
@@ -360,6 +372,7 @@ export const services: Service[] = [
     category: "Gardener",
     location: "Powai, Mumbai",
     availability: "Available",
+    status: "Approved",
     rating: 4.5,
     distance: 4.0,
     tags: ["Lawn Care", "Plant Maintenance", "Seasonal"],

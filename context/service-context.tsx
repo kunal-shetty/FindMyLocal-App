@@ -7,6 +7,7 @@ interface Filters {
   categories: string[]
   locations: string[]
   availability: string[]
+  status: string[]
 }
 
 interface ServiceContextType {
@@ -40,17 +41,19 @@ export function ServiceProvider({ children }: { children: ReactNode }) {
     categories: [],
     locations: [],
     availability: [],
+    status: []
   })
   const [comparison, setComparison] = useState<Service[]>([])
 
   const hasActiveFilters =
-    filters.categories.length > 0 || filters.locations.length > 0 || filters.availability.length > 0
+    filters.categories.length > 0 || filters.locations.length > 0 || filters.availability.length > 0 || filters.status.length > 0
 
   const clearFilters = () => {
     setFilters({
       categories: [],
       locations: [],
       availability: [],
+      status: []
     })
   }
 
@@ -75,7 +78,10 @@ export function ServiceProvider({ children }: { children: ReactNode }) {
       const matchesAvailability =
         filters.availability.length === 0 || filters.availability.includes(service.availability)
 
-      return matchesSearch && matchesCategory && matchesLocation && matchesAvailability
+      const matchStatus =
+        filters.status.length === 0 || filters.status.includes(service.status)
+
+      return matchesSearch && matchesCategory && matchesLocation && matchesAvailability && matchStatus
     })
   }, [searchQuery, filters])
 
