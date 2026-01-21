@@ -5,7 +5,7 @@ import { ServiceProvider } from "@/context/service-context"
 import { DiscoverHeader } from "@/components/discover/header"
 import { SearchBar } from "@/components/search-bar"
 import { Filters } from "@/components/filters"
-import { ServiceGrid } from "@/components/service-grid"
+
 import { ComparisonDrawer } from "@/components/comparison-drawer"
 import { LoadingState } from "@/components/loading-state"
 import { useState, useEffect } from "react"
@@ -15,6 +15,7 @@ import { AdminFilters } from "@/components/admin-filters"
 import { Card, CardContent } from "@/components/ui/card"
 import { BadgeCheck, Calendar, CheckCircle, Clock } from "lucide-react"
 import { services } from "@/data/services"
+import { AdminServiceGrid } from "@/components/admin-servicegrid"
 
 export default function DiscoverPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -208,7 +209,7 @@ export default function DiscoverPage() {
               <AdminFilters />
 
               {/* Content */}
-              {isLoading ? <LoadingState /> : <ServiceGrid />}
+              {isLoading ? <LoadingState /> : <AdminServiceGrid/>}
             </div>
           </main>
 
