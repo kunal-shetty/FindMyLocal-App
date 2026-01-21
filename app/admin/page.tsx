@@ -54,53 +54,152 @@ export default function DiscoverPage() {
           <main className="container mx-auto px-4 py-8 max-w-7xl">      
             <div className="space-y-8">
               {/* Hero Section */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4">
-  {/* Pending */}
-  <Card className="border-border/50 aspect-square sm:aspect-auto">
-    <CardContent className="p-0 sm:p-4 h-full grid place-items-center">
-      <div className="flex flex-col items-center leading-none">
-        <Clock className="h-5 w-5 sm:hidden text-muted-foreground" />
-        <div className="text-base text-yellow-500 sm:text-2xl font-bold mt-1 sm:mt-0">
-          {pendingBookings.length}
-        </div>
-        <p className="hidden sm:block text-sm text-muted-foreground mt-1">
-          Pending Requests
-        </p>
-      </div>
-    </CardContent>
-  </Card>
+            <div className="space-y-6">
+                {/* Dashboard Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <h2 className="text-2xl font-semibold">Admin Dashboard</h2>
+                        <p className="text-sm text-muted-foreground">
+                            Overview of service requests and recent activity
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            type="button"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm shadow-sm"
+                        >
+                            <Calendar className="h-4 w-4" />
+                            Today
+                        </button>
+                        <button
+                            type="button"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm"
+                        >
+                            Export
+                        </button>
+                    </div>
+                </div>
 
-  {/* Confirmed */}
-  <Card className="border-border/50 aspect-square sm:aspect-auto">
-    <CardContent className="p-0 sm:p-4 h-full grid place-items-center">
-      <div className="flex flex-col items-center leading-none">
-        <CheckCircle className="h-5 w-5 sm:hidden text-muted-foreground" />
-        <div className="text-base text-green-500 sm:text-2xl font-bold mt-1 sm:mt-0">
-          {confirmedBookings.length}
-        </div>
-        <p className="hidden sm:block text-sm text-muted-foreground mt-1">
-          Approved 
-        </p>
-      </div>
-    </CardContent>
-  </Card>
+                {/* Top summary cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card className="border-border/50">
+                        <CardContent className="p-4 flex items-center gap-4">
+                            <div className="bg-yellow-50 text-yellow-600 p-2 rounded-md">
+                                <Clock className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                                    Pending
+                                </p>
+                                <div className="text-2xl font-bold">{pendingBookings.length}</div>
+                                <p className="text-sm text-muted-foreground">Requests awaiting review</p>
+                            </div>
+                        </CardContent>
+                    </Card>
 
+                    <Card className="border-border/50">
+                        <CardContent className="p-4 flex items-center gap-4">
+                            <div className="bg-green-50 text-green-600 p-2 rounded-md">
+                                <CheckCircle className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                                    Approved
+                                </p>
+                                <div className="text-2xl font-bold">{confirmedBookings.length}</div>
+                                <p className="text-sm text-muted-foreground">Active and confirmed</p>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-  {/* Completed */}
-  <Card className="border-border/50 aspect-square sm:aspect-auto">
-    <CardContent className="p-0 sm:p-4 h-full grid place-items-center">
-      <div className="flex flex-col items-center leading-none">
-        <BadgeCheck className="h-5 w-5 sm:hidden text-muted-foreground" />
-        <div className="text-base text-red-500 sm:text-2xl font-bold mt-1 sm:mt-0">
-          {completedBookings.length}
-        </div>
-        <p className="hidden sm:block text-sm text-muted-foreground mt-1">
-          Rejected
-        </p>
-      </div>
-    </CardContent>
-  </Card>
-</div> 
+                    <Card className="border-border/50">
+                        <CardContent className="p-4 flex items-center gap-4">
+                            <div className="bg-red-50 text-red-600 p-2 rounded-md">
+                                <BadgeCheck className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                                    Rejected
+                                </p>
+                                <div className="text-2xl font-bold">{completedBookings.length}</div>
+                                <p className="text-sm text-muted-foreground">Declined requests</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border-border/50">
+                        <CardContent className="p-4 flex items-center gap-4">
+                            <div className="bg-slate-50 text-slate-600 p-2 rounded-md">
+                                <Calendar className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                                    Total Services
+                                </p>
+                                <div className="text-2xl font-bold">{services.length}</div>
+                                <p className="text-sm text-muted-foreground">All listed services</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Main content: chart + recent activity */}
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Activity chart placeholder (span 2 cols on large screens) */}
+                   
+                    {/* Recent activity / quick actions */}
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-semibold">Recent Requests</h3>
+                                <p className="text-sm text-muted-foreground">Latest 5</p>
+                            </div>
+
+                            <ul className="space-y-3">
+                                {services.slice(0, 5).map((b, idx) => {
+                                    const status = b.status ?? "Unknown"
+                                    const color =
+                                        status === "Pending"
+                                            ? "bg-yellow-100 text-yellow-800"
+                                            : status === "Approved"
+                                            ? "bg-green-100 text-green-800"
+                                            : status === "Rejected"
+                                            ? "bg-red-100 text-red-800"
+                                            : "bg-slate-100 text-slate-800"
+
+                                    return (
+                                        <li key={b.id ?? idx} className="flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 rounded-md bg-muted/10 flex items-center justify-center text-sm font-medium">
+                                                    {b.name?.charAt(0) ?? "S"}
+                                                </div>
+                                                <div>
+                                                    <div className="text-sm font-medium">{b.name ?? "Unnamed service"}</div>
+                                                    <div className="text-xs text-muted-foreground">{b.category ?? "—"}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-3">
+                                                <span className={`text-xs px-2 py-1 rounded-full ${color}`}>{status}</span>
+                                                <button className="text-sm text-primary">View</button>
+                                            </div>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+
+                            <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
+                                <button className="text-sm text-muted-foreground">View all requests</button>
+                                <div className="flex items-center gap-2">
+                                    <button className="px-3 py-1 rounded-md bg-primary text-primary-foreground text-sm">
+                                        New Request
+                                    </button>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
 
               {/* Search Bar */}
               <SearchBar />
