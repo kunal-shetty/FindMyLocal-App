@@ -5,12 +5,16 @@ import { ServiceProvider } from "@/context/service-context"
 import { DiscoverHeader } from "@/components/discover/header"
 import { SearchBar } from "@/components/search-bar"
 import { Filters } from "@/components/filters"
-import { ServiceGrid } from "@/components/service-grid"
+
 import { ComparisonDrawer } from "@/components/comparison-drawer"
 import { LoadingState } from "@/components/loading-state"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/auth-context"
 import { redirect } from "next/navigation"
+import { AdminServiceGrid } from "@/components/admin-servicegrid"
+
+
+
 
 export default function DiscoverPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -61,7 +65,7 @@ export default function DiscoverPage() {
               <Filters />
 
               {/* Content */}
-              {isLoading ? <LoadingState /> : <ServiceGrid />}
+              {isLoading ? <LoadingState /> : <AdminServiceGrid/>}
             </div>
           </main>
 
