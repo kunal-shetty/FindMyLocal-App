@@ -52,7 +52,7 @@ export function LandingHero() {
       </div>
 
       {/* Grid pattern overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-40" />
 
       <div className="relative z-10 container mx-auto px-4 max-w-6xl">
         <div className="hero-content text-center space-y-8">

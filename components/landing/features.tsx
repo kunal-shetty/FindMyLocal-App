@@ -93,6 +93,9 @@ export function LandingFeatures() {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/15 rounded-full blur-3xl float-element" />
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-chart-3/10 rounded-full blur-3xl float-element" />
       </div>
+
+      {/* Image Placeholders */}
+      
       <div className="container mx-auto max-w-6xl relative">
         <div className="text-center space-y-4 mb-16 features-title">
           <h2 className="text-4xl md:text-5xl font-bold">Why Choose FindMyLocal</h2>

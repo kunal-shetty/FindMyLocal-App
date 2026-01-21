@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { ArrowLeft, Star, MapPin, Shield, Heart, Share2, Check, Calendar, Clock, Phone } from "lucide-react"
+import { ArrowLeft, Star, MapPin, Shield, Heart, Share2, Check, Calendar, Clock, Phone, MessageCircle } from "lucide-react"
 import Image from "next/image"
 
 export function ServiceDetailClient() {
@@ -31,7 +31,22 @@ const serviceId = searchParams.get("id")
     if (containerRef.current) {
       containerRef.current.style.opacity = "1"
     }
-  }, [])
+    // Load favorite status
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]")
+    setIsLiked(favorites.includes(serviceId))
+  }, [serviceId])
+
+  const toggleFavorite = () => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]")
+    if (isLiked) {
+      const updated = favorites.filter((id: string) => id !== serviceId)
+      localStorage.setItem("favorites", JSON.stringify(updated))
+      setIsLiked(false)
+    } else {
+      localStorage.setItem("favorites", JSON.stringify([...favorites, serviceId]))
+      setIsLiked(true)
+    }
+  }
 
   if (!service) {
     return (
@@ -103,7 +118,7 @@ const serviceId = searchParams.get("id")
               variant="ghost"
               size="icon"
               className="rounded-full bg-background/80 backdrop-blur-sm"
-              onClick={() => setIsLiked(!isLiked)}
+              onClick={toggleFavorite}
             >
               <Heart className={cn("w-5 h-5 transition-colors", isLiked && "fill-red-500 text-red-500")} />
             </Button>
@@ -232,6 +247,39 @@ const serviceId = searchParams.get("id")
                 <p className="font-semibold">{service.provider.languages.join(", ")}</p>
               </div>
             )}
+            
+            {/* Contact Actions */}
+            <div className="mt-4 pt-4 border-t border-border/50 space-y-2">
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+                <span>Contact Provider</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  className="h-11 rounded-xl bg-transparent border-green-500/30 hover:bg-green-500/10"
+                  asChild
+                >
+                  <a
+                    href={`https://wa.me/${service.provider.whatsapp.replace(/[^0-9]/g, "")}?text=Hi ${encodeURIComponent(service.provider.name)}, I'm interested in your ${encodeURIComponent(service.name)} service.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2 text-green-500" />
+                    WhatsApp
+                  </a>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-11 rounded-xl bg-transparent"
+                  asChild
+                >
+                  <a href={`tel:${service.provider.phone.replace(/[^0-9+]/g, "")}`}>
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call
+                  </a>
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -272,7 +320,7 @@ const serviceId = searchParams.get("id")
                 Book Now
               </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-3xl">
+            <SheetContent side="bottom" className="rounded-t-3xl p-4">
               <SheetHeader className="mb-6">
                 <SheetTitle className="text-xl">Book Appointment</SheetTitle>
               </SheetHeader>

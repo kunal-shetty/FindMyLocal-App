@@ -34,13 +34,13 @@ export function LandingNav() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               <Link
-                href="#features"
+                href="/#features"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Features
               </Link>
               <Link
-                href="#how-it-works"
+                href="/#how-it-works"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 How It Works
@@ -52,10 +52,22 @@ export function LandingNav() {
                 Browse Services
               </Link>
               <Link
-                href="/mobile"
+                href="/about"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Mobile App
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Contact
+              </Link>
+              <Link
+                href="/auth/admin"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Admin
               </Link>
             </div>
 
@@ -116,11 +128,25 @@ export function LandingNav() {
                 Browse Services
               </Link>
               <Link
-                href="/mobile"
+                href="/about"
                 className="px-4 py-3 rounded-xl hover:bg-muted transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Mobile App
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="px-4 py-3 rounded-xl hover:bg-muted transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link
+                href="/auth/admin"
+                className="px-4 py-3 rounded-xl hover:bg-muted transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Admin
               </Link>
             </div>
             <div className="p-4 border-t border-border space-y-3">

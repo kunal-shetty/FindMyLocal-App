@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Sparkles, LayoutDashboard, User, LogOut } from "lucide-react"
+import { Sparkles, LayoutDashboard, User, LogOut, Calendar, BarChart3, Star, DollarSign } from "lucide-react"
 import Link from "next/link"
 import { useTheme } from "@/components/theme-provider"
 import { Moon, Sun } from "lucide-react"
@@ -12,8 +12,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 interface ProviderNavProps {
-  activeTab: "dashboard" | "profile"
-  onTabChange: (tab: "dashboard" | "profile") => void
+  activeTab: "dashboard" | "bookings" | "analytics" | "reviews" | "payments" | "profile"
+  onTabChange: (tab: "dashboard" | "bookings" | "analytics" | "reviews" | "payments" | "profile") => void
 }
 
 export function ProviderNav({ activeTab, onTabChange }: ProviderNavProps) {
@@ -39,9 +39,31 @@ export function ProviderNav({ activeTab, onTabChange }: ProviderNavProps) {
 
         <div className="hidden md:block">
           <Tabs value={activeTab} onValueChange={(v) => onTabChange(v as any)}>
-            <TabsList>
-              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-              <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsList className="grid grid-cols-6 w-full max-w-2xl">
+              <TabsTrigger value="dashboard" className="flex items-center gap-2">
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden lg:inline">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger value="bookings" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span className="hidden lg:inline">Bookings</span>
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden lg:inline">Analytics</span>
+              </TabsTrigger>
+              <TabsTrigger value="reviews" className="flex items-center gap-2">
+                <Star className="w-4 h-4" />
+                <span className="hidden lg:inline">Reviews</span>
+              </TabsTrigger>
+              <TabsTrigger value="payments" className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4" />
+                <span className="hidden lg:inline">Payments</span>
+              </TabsTrigger>
+              <TabsTrigger value="profile" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                <span className="hidden lg:inline">Profile</span>
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -71,42 +93,86 @@ export function ProviderNav({ activeTab, onTabChange }: ProviderNavProps) {
 
   {/* MOBILE BOTTOM NAV — OUTSIDE */}
   <div
-    className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur md:hidden"
+    className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur md:hidden overflow-x-auto"
     style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
   >
-    <div className="flex justify-around py-2">
+    <div className="flex justify-around py-2 min-w-max px-2">
       <button
         onClick={() => onTabChange("dashboard")}
         className={cn(
-          "flex flex-col items-center gap-1 text-xs",
+          "flex flex-col items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors",
           activeTab === "dashboard"
-            ? "text-primary"
+            ? "text-primary bg-primary/10"
             : "text-muted-foreground"
         )}
       >
         <LayoutDashboard className="w-5 h-5" />
-        Dashboard
+        <span>Dashboard</span>
+      </button>
+
+      <button
+        onClick={() => onTabChange("bookings")}
+        className={cn(
+          "flex flex-col items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors",
+          activeTab === "bookings"
+            ? "text-primary bg-primary/10"
+            : "text-muted-foreground"
+        )}
+      >
+        <Calendar className="w-5 h-5" />
+        <span>Bookings</span>
+      </button>
+
+      <button
+        onClick={() => onTabChange("analytics")}
+        className={cn(
+          "flex flex-col items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors",
+          activeTab === "analytics"
+            ? "text-primary bg-primary/10"
+            : "text-muted-foreground"
+        )}
+      >
+        <BarChart3 className="w-5 h-5" />
+        <span>Analytics</span>
+      </button>
+
+      <button
+        onClick={() => onTabChange("reviews")}
+        className={cn(
+          "flex flex-col items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors",
+          activeTab === "reviews"
+            ? "text-primary bg-primary/10"
+            : "text-muted-foreground"
+        )}
+      >
+        <Star className="w-5 h-5" />
+        <span>Reviews</span>
+      </button>
+
+      <button
+        onClick={() => onTabChange("payments")}
+        className={cn(
+          "flex flex-col items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors",
+          activeTab === "payments"
+            ? "text-primary bg-primary/10"
+            : "text-muted-foreground"
+        )}
+      >
+        <DollarSign className="w-5 h-5" />
+        <span>Payments</span>
       </button>
 
       <button
         onClick={() => onTabChange("profile")}
         className={cn(
-          "flex flex-col items-center gap-1 text-xs",
+          "flex flex-col items-center gap-1 text-xs px-3 py-1 rounded-lg transition-colors",
           activeTab === "profile"
-            ? "text-primary"
+            ? "text-primary bg-primary/10"
             : "text-muted-foreground"
         )}
       >
         <User className="w-5 h-5" />
-        Profile
-      </button>
-
-      <button
-        onClick={handleLogout}
-        className="flex flex-col items-center gap-1 text-xs text-destructive"
-      >
-        <LogOut className="w-5 h-5" />
-        Logout
+        <span>Profile</span>
       </button>
     </div>
   </div>

@@ -10,6 +10,10 @@ import {
   Star,
   User,
   CheckCircle,
+  Phone,
+  MessageCircle,
+  Calendar,
+  Clock,
 } from "lucide-react"
 import { useState } from "react"
 import {
@@ -19,6 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 export default function ServiceDetailPage() {
   const searchParams = useSearchParams()
@@ -29,6 +34,12 @@ export default function ServiceDetailPage() {
 
   const service = services.find((s) => s.id === id)
   if (!service) notFound()
+
+    const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"]
+
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const minDate = tomorrow.toISOString().split("T")[0]
 
   const [activeImage, setActiveImage] = useState(service.images[0])
   const [isBookingOpen, setIsBookingOpen] = useState(false)
@@ -196,6 +207,40 @@ export default function ServiceDetailPage() {
               </div>
             )}
 
+            {/* Contact Info */}
+            <div className="pt-4 border-t space-y-3">
+              <div className="text-sm">
+                <p className="text-muted-foreground mb-2">Contact Provider</p>
+                <p className="font-medium">{service.provider.phone}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  className="w-full border-green-500/30 hover:bg-green-500/10"
+                  asChild
+                >
+                  <a
+                    href={`https://wa.me/${service.provider.whatsapp.replace(/[^0-9]/g, "")}?text=Hi ${encodeURIComponent(service.provider.name)}, I'm interested in your ${encodeURIComponent(service.name)} service.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2 text-green-500" />
+                    WhatsApp
+                  </a>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  asChild
+                >
+                  <a href={`tel:${service.provider.phone.replace(/[^0-9+]/g, "")}`}>
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call
+                  </a>
+                </Button>
+              </div>
+            </div>
+
             <Button
               size="lg"
               className="w-full"
@@ -214,20 +259,62 @@ export default function ServiceDetailPage() {
             <DialogTitle>Book Service</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
-            <Input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
+          <div>
+  <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+    <Clock className="w-4 h-4" />
+    Select Time
+  </h3>
 
-            <Input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-            />
+  <div className="grid grid-cols-4 gap-2">
+    {timeSlots.map((slot) => (
+      <Button
+        key={slot}
+        variant={slot === time ? "default" : "outline"}
+        size="sm"
+        onClick={() => setTime(slot)}
+        className={cn(
+          "rounded-xl h-11",
+          slot === time && "bg-primary text-primary-foreground"
+        )}
+      >
+        {slot}
+      </Button>
+    ))}
+  </div>
+  
+</div>
 
-            <Button
+
+                  {/* Summary */}
+                  {date && time && (
+                    <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
+                      <p className="text-sm text-muted-foreground mb-1">Booking Summary</p>
+                      <p className="font-medium">
+                        {new Date(date).toLocaleDateString("en-IN", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
+                        at {time}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Select Date
+                    </h3>
+                    <input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full p-4 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none"
+                      min={minDate}
+                    />
+                  </div>
+                  <Button
               className="w-full"
               disabled={!date || !time}
               onClick={() => {
@@ -243,13 +330,12 @@ export default function ServiceDetailPage() {
 
                 setIsBookingOpen(false)
 
-                // 👉 redirect to payments page with service id
-                router.push(`/payments?id=${service.id}`)
+                //  redirect to payments page with service id, date, and time
+                router.push(`/checkout?amt=${service.id}&date=${date}&time=${time}`)
               }}
             >
               Proceed to Payment
             </Button>
-          </div>
         </DialogContent>
       </Dialog>
 

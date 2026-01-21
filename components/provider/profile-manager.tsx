@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
 import { useAuth } from "@/context/auth-context"
 import { Switch } from "@/components/ui/switch"
-import { X } from "lucide-react"
+import { X, Plus, Phone, MessageCircle, Upload, Image as ImageIcon, Sparkles } from "lucide-react"
 
 export function ProfileManager() {
   const { user } = useAuth()
@@ -23,10 +23,27 @@ export function ProfileManager() {
       "Professional plumbing services for residential and commercial properties. Fast response time and quality work guaranteed.",
     availability: "available" as "available" | "busy" | "offline",
     tags: ["Emergency", "24/7", "Licensed"],
+    phone: "+91 98765 43210",
+    whatsapp: "+91 98765 43210",
+    experience: 8,
+    completedJobs: 430,
+    languages: ["Hindi", "English", "Marathi"],
+    pricingType: "range" as "fixed" | "range",
+    pricingFixed: 500,
+    pricingMin: 300,
+    pricingMax: 1200,
+    pricingUnit: "per visit",
+    inclusions: ["Initial inspection", "Basic tools & equipment", "Minor repairs", "Post-service cleanup"],
   })
 
   const [newTag, setNewTag] = useState("")
+  const [newLanguage, setNewLanguage] = useState("")
   const [isSaving, setIsSaving] = useState(false)
+  const [serviceImages, setServiceImages] = useState<string[]>([
+    "/services/plumber-1.jpg",
+    "/services/plumber-2.webp",
+  ])
+  
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -75,6 +92,55 @@ export function ProfileManager() {
             <CardDescription>Edit your business details and description</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Service Images */}
+            <div className="space-y-3">
+              <Label>Service Images</Label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {serviceImages.map((img, idx) => (
+                  <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-border/50">
+                    <img
+                      src={img}
+                      alt={`Service ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setServiceImages(serviceImages.filter((_, i) => i !== idx))
+                      }}
+                      className="absolute top-2 right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                {serviceImages.length < 6 && (
+                  <label className="aspect-square border-2 border-dashed border-border/50 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
+                    <Upload className="w-6 h-6 text-muted-foreground mb-2" />
+                    <span className="text-xs text-muted-foreground">Add Image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          const reader = new FileReader()
+                          reader.onloadend = () => {
+                            if (reader.result) {
+                              setServiceImages([...serviceImages, reader.result as string])
+                            }
+                          }
+                          reader.readAsDataURL(file)
+                        }
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Upload up to 6 images. Recommended: 1200x800px</p>
+            </div>
+
             {/* Business Name */}
             <div className="space-y-2">
               <Label htmlFor="businessName">Business Name</Label>
@@ -118,8 +184,255 @@ export function ProfileManager() {
               />
             </div>
 
+            {/* Contact Information */}
+            <div className="space-y-4 pt-4 border-t">
+              <Label className="text-base font-semibold">Contact Information</Label>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phone"
+                    value={profile.phone}
+                    onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                    placeholder="+91 98765 43210"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="whatsapp" className="flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4" />
+                    WhatsApp Number
+                  </Label>
+                  <Input
+                    id="whatsapp"
+                    value={profile.whatsapp}
+                    onChange={(e) => setProfile({ ...profile, whatsapp: e.target.value })}
+                    placeholder="+91 98765 43210"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Experience & Stats */}
+            <div className="space-y-4 pt-4 border-t">
+              <Label className="text-base font-semibold">Experience & Stats</Label>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="experience">Years of Experience</Label>
+                  <Input
+                    id="experience"
+                    type="number"
+                    min="0"
+                    value={profile.experience}
+                    onChange={(e) => setProfile({ ...profile, experience: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="completedJobs">Completed Jobs</Label>
+                  <Input
+                    id="completedJobs"
+                    type="number"
+                    min="0"
+                    value={profile.completedJobs}
+                    onChange={(e) => setProfile({ ...profile, completedJobs: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Languages */}
+            <div className="space-y-3 pt-4 border-t">
+              <Label>Languages Spoken</Label>
+              <div className="flex gap-2 flex-wrap">
+                {profile.languages.map((lang) => (
+                  <Badge key={lang} variant="secondary" className="gap-1">
+                    {lang}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setProfile({
+                          ...profile,
+                          languages: profile.languages.filter((l) => l !== lang),
+                        })
+                      }
+                      className="hover:text-destructive"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add language..."
+                  value={newLanguage}
+                  onChange={(e) => setNewLanguage(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      const lang = newLanguage.trim()
+                      if (lang && !profile.languages.includes(lang)) {
+                        setProfile({ ...profile, languages: [...profile.languages, lang] })
+                        setNewLanguage("")
+                      }
+                    }
+                  }}
+                  maxLength={20}
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    const lang = newLanguage.trim()
+                    if (lang && !profile.languages.includes(lang)) {
+                      setProfile({ ...profile, languages: [...profile.languages, lang] })
+                      setNewLanguage("")
+                    }
+                  }}
+                >
+                  Add
+                </Button>
+              </div>
+            </div>
+
+            {/* Pricing */}
+            <div className="space-y-4 pt-4 border-t">
+              <Label className="text-base font-semibold">Pricing</Label>
+              <div className="space-y-3">
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      checked={profile.pricingType === "fixed"}
+                      onChange={() => setProfile({ ...profile, pricingType: "fixed" })}
+                      className="w-4 h-4"
+                    />
+                    Fixed Price
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      checked={profile.pricingType === "range"}
+                      onChange={() => setProfile({ ...profile, pricingType: "range" })}
+                      className="w-4 h-4"
+                    />
+                    Price Range
+                  </label>
+                </div>
+                {profile.pricingType === "fixed" ? (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="pricingFixed">Amount</Label>
+                      <Input
+                        id="pricingFixed"
+                        type="number"
+                        min="0"
+                        value={profile.pricingFixed}
+                        onChange={(e) =>
+                          setProfile({ ...profile, pricingFixed: parseInt(e.target.value) || 0 })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pricingUnit">Unit</Label>
+                      <Input
+                        id="pricingUnit"
+                        value={profile.pricingUnit}
+                        onChange={(e) => setProfile({ ...profile, pricingUnit: e.target.value })}
+                        placeholder="per visit"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="pricingMin">Min Amount</Label>
+                      <Input
+                        id="pricingMin"
+                        type="number"
+                        min="0"
+                        value={profile.pricingMin}
+                        onChange={(e) =>
+                          setProfile({ ...profile, pricingMin: parseInt(e.target.value) || 0 })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pricingMax">Max Amount</Label>
+                      <Input
+                        id="pricingMax"
+                        type="number"
+                        min="0"
+                        value={profile.pricingMax}
+                        onChange={(e) =>
+                          setProfile({ ...profile, pricingMax: parseInt(e.target.value) || 0 })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pricingUnitRange">Unit</Label>
+                      <Input
+                        id="pricingUnitRange"
+                        value={profile.pricingUnit}
+                        onChange={(e) => setProfile({ ...profile, pricingUnit: e.target.value })}
+                        placeholder="per visit"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Service Inclusions */}
+            <div className="space-y-3 pt-4 border-t">
+              <Label>Service Inclusions</Label>
+              <div className="space-y-2">
+                {profile.inclusions.map((inclusion, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <Input
+                      value={inclusion}
+                      onChange={(e) => {
+                        const updated = [...profile.inclusions]
+                        updated[idx] = e.target.value
+                        setProfile({ ...profile, inclusions: updated })
+                      }}
+                      placeholder="Inclusion item"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setProfile({
+                          ...profile,
+                          inclusions: profile.inclusions.filter((_, i) => i !== idx),
+                        })
+                      }}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    setProfile({
+                      ...profile,
+                      inclusions: [...profile.inclusions, ""],
+                    })
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Inclusion
+                </Button>
+              </div>
+            </div>
+
             {/* Tags */}
-            <div className="space-y-3">
+            <div className="space-y-3 pt-4 border-t">
               <Label>Service Tags</Label>
               <div className="flex gap-2 flex-wrap">
                 {profile.tags.map((tag) => (
@@ -208,6 +521,46 @@ export function ProfileManager() {
               <div>
                 <Label className="text-xs text-muted-foreground">Account Type</Label>
                 <p className="text-sm font-medium capitalize">Service Provider</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* AI Suggestions */}
+          <Card className="border-border/50 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                AI Profile Tips
+              </CardTitle>
+              <CardDescription>Optimize your profile for better visibility</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="p-3 bg-background/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">📝 Description Enhancement</p>
+                <p className="text-xs text-muted-foreground">
+                  Your description is good! Consider adding more specific details about your expertise
+                  and unique selling points.
+                </p>
+              </div>
+              <div className="p-3 bg-background/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">🏷️ Tag Optimization</p>
+                <p className="text-xs text-muted-foreground">
+                  Add tags like "24/7", "Emergency", or "Licensed" to improve search visibility.
+                </p>
+              </div>
+              <div className="p-3 bg-background/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">💰 Pricing Suggestion</p>
+                <p className="text-xs text-muted-foreground">
+                  Your pricing is competitive. Consider offering package deals for repeat customers.
+                </p>
+              </div>
+              <div className="p-3 bg-background/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">📸 Image Quality</p>
+                <p className="text-xs text-muted-foreground">
+                  {serviceImages.length < 3
+                    ? "Add more high-quality images to showcase your work. Customers prefer profiles with 3+ images."
+                    : "Great! You have enough images. Keep them updated with your latest work."}
+                </p>
               </div>
             </CardContent>
           </Card>

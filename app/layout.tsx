@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { AuthProvider } from "@/context/auth-context"
 import { ServiceProvider } from "@/context/service-context"
 import { ThemeProvider } from "@/components/theme-provider"
+// import { AIChatbot } from "@/components/ai-chatbot"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -55,7 +56,11 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-background text-foreground">
         <ThemeProvider>
           <AuthProvider>
-            <ServiceProvider>{children}</ServiceProvider>
+            <ServiceProvider>
+                <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+              {children}
+              {/* <AIChatbot /> */}
+            </ServiceProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

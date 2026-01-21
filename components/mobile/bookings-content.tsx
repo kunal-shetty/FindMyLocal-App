@@ -5,7 +5,7 @@ import { useServices } from "@/context/service-context"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, Star, Trash2 } from "lucide-react"
+import { Calendar, Clock, Star, Trash2, Phone, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -115,21 +115,21 @@ export function MobileBookingsContent() {
                       <CardContent className="p-0">
                         <div className="flex">
                           <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg border border-border/60 relative">
-                            <Image
-                              src={
-                                service.images?.[1] && service.images[1].trim() !== ""
-                                  ? service.images[1]
-                                  : "/placeholder-service.jpg"
-                              }
-                              alt={service.name}
-                              width={96}
-                              height={96}
-                              className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
-                            />
+  <Image
+    src={
+      service.images?.[1] && service.images[1].trim() !== ""
+        ? service.images[1]
+        : "/placeholder-service.jpg"
+    }
+    alt={service.name}
+    width={96}
+    height={96}
+    className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+  />
 
-                            {/* subtle overlay for better contrast */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
-                          </div>
+  {/* subtle overlay for better contrast */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none" />
+</div>
 
 
                           <div className="flex-1 p-3">
@@ -160,26 +160,59 @@ export function MobileBookingsContent() {
                           </div>
                         </div>
 
-                        <div className="px-3 pb-3 flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1 h-9 rounded-lg bg-transparent"
-                            asChild
-                          >
-                            <Link href={`/mobile/service/?id=${service.id}`}>
-                              View Details
-                            </Link>
-                          </Button>
+                        <div className="px-3 pb-3 space-y-2">
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 h-9 rounded-lg bg-transparent"
+                              asChild
+                            >
+                              <Link href={`/mobile/service/?id=${service.id}`}>
+                                View Details
+                              </Link>
+                            </Button>
 
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-9 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 bg-transparent"
-                            onClick={() => cancelBooking(bookings.indexOf(booking))}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-9 w-9 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10 bg-transparent"
+                              onClick={() => cancelBooking(bookings.indexOf(booking))}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          
+                          {/* Contact Provider */}
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 h-9 rounded-lg bg-transparent border-green-500/30 hover:bg-green-500/10"
+                              asChild
+                            >
+                              <a
+                                href={`https://wa.me/${service.provider.whatsapp.replace(/[^0-9]/g, "")}?text=Hi ${encodeURIComponent(service.provider.name)}, regarding my booking for ${encodeURIComponent(service.name)} on ${formatDate(booking.date)} at ${booking.time}.`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <MessageCircle className="w-4 h-4 mr-2 text-green-500" />
+                                WhatsApp
+                              </a>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 h-9 rounded-lg bg-transparent"
+                              asChild
+                            >
+                              <a href={`tel:${service.provider.phone.replace(/[^0-9+]/g, "")}`}>
+                                <Phone className="w-4 h-4 mr-2" />
+                                Call
+                              </a>
+                            </Button>
+                          </div>
+                          
                         </div>
                       </CardContent>
                     </Card>
@@ -208,13 +241,13 @@ export function MobileBookingsContent() {
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div className="space-y-0.5">
-                            <h3 className="font-medium text-foreground line-clamp-2">
-                              {service.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground truncate">
-                              {service.provider.name}
-                            </p>
-                          </div>
+  <h3 className="font-medium text-foreground line-clamp-2">
+    {service.name}
+  </h3>
+  <p className="text-sm text-muted-foreground truncate">
+    {service.provider.name}
+  </p>
+</div>
 
                           <Badge variant="secondary" className="bg-muted">
                             Completed
@@ -248,16 +281,16 @@ export function MobileBookingsContent() {
                           </Button>
                         ) : (
                           <div className="flex items-center gap-1 mt-3 text-sm text-muted-foreground">
-                            <span>Your rating: </span>
-                            <div className="flex items-center gap-0.5">
-                              {Array.from({ length: alreadyRated }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className="w-4 h-4 text-yellow-500 fill-yellow-500"
-                                />
-                              ))}
-                            </div>
-                          </div>
+  <span>Your rating: </span>
+  <div className="flex items-center gap-0.5">
+    {Array.from({ length: alreadyRated }).map((_, i) => (
+      <Star
+        key={i}
+        className="w-4 h-4 text-yellow-500 fill-yellow-500"
+      />
+    ))}
+  </div>
+</div>
 
                         )}
                       </CardContent>
