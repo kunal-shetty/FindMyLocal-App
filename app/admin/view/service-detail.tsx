@@ -307,105 +307,36 @@ const serviceId = searchParams.get("id")
         style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
       >
         <div className="flex gap-3">
-          
-          <Sheet open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-            <SheetTrigger asChild>
-              <Button
+     <Button
                 className="flex-1 h-12 rounded-xl text-base font-medium "
                 style={{
                   background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
                 }}
               >
                 <Calendar className="w-5 h-5 mr-2" />
-                Book Now
+                Approve
               </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-3xl p-4">
-              <SheetHeader className="mb-6">
-                <SheetTitle className="text-xl">Book Appointment</SheetTitle>
-              </SheetHeader>
-
-              {bookingSuccess ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mx-auto mb-4">
-                    <Check className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">Booking Confirmed!</h3>
-                  <p className="text-muted-foreground">Redirecting to your bookings...</p>
-                </div>
-              ) : (
-                <div className="space-y-6 px-2">
-                  
-                  {/* Time Selection */}
-                  <div>
-                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      Select Time
-                    </h3>
-                    <div className="grid grid-cols-4 gap-2">
-                      {timeSlots.map((time) => (
-                        <Button
-                          key={time}
-                          variant={selectedTime === time ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setSelectedTime(time)}
-                          className={cn("rounded-xl h-11", selectedTime === time && "bg-primary")}
-                        >
-                          {time}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Summary */}
-                  {selectedDate && selectedTime && (
-                    <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-                      <p className="text-sm text-muted-foreground mb-1">Booking Summary</p>
-                      <p className="font-medium">
-                        {new Date(selectedDate).toLocaleDateString("en-IN", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
-                        at {selectedTime}
-                      </p>
-                    </div>
-                  )}
-
-
-
-                  <div>
-                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      Select Date
-                    </h3>
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="w-full p-4 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none"
-                      min={minDate}
-                    />
-                  </div>
-                  <Button
-                    className="w-full h-12 rounded-xl text-base font-medium"
-                    style={{
-                      background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
-                    }}
-                    onClick={handleBooking}
-                    disabled={!selectedDate || !selectedTime}
-                  >
-                    Confirm Booking
-                  </Button>
-
-
-                </div>
-              )}
-            </SheetContent>
-          </Sheet>
+                   <Button
+                className="flex-1 h-12 rounded-xl text-base font-medium "
+                style={{
+                  background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
+                }}
+              >
+                <Calendar className="w-5 h-5 mr-2" />
+                Reject
+              </Button>
+                   <Button
+                className="flex-1 h-12 rounded-xl text-base font-medium "
+                style={{
+                  background: "linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%)",
+                }}
+              >
+                <Calendar className="w-5 h-5 mr-2" />
+                Delete
+              </Button>
         </div>
       </div>
     </div>
   )
 }
+ 
