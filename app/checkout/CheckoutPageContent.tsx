@@ -117,7 +117,6 @@ export default function CheckoutPageContent() {
     alert("Unable to load payment gateway")
     return
   }
-
   const options = {
     key, // dynamically fetched
     amount: order.amount,

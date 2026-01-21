@@ -21,9 +21,9 @@ export default function DiscoverPage() {
   const [isLoading, setIsLoading] = useState(true)
   const { isAuthenticated, isLoading: authLoading } = useAuth()
 
-  const pendingBookings = services.filter((b) => b.status === "Pending")
-  const confirmedBookings = services.filter((b) => b.status === "Approved")
-  const completedBookings = services.filter((b) => b.status === "Rejected")
+  let pendingBookings = services.filter((b) => b.status === "Pending")
+  let confirmedBookings = services.filter((b) => b.status === "Approved")
+  let completedBookings = services.filter((b) => b.status === "Rejected")
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
