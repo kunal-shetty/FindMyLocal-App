@@ -338,5 +338,4 @@ const serviceId = searchParams.get("id")
       </div>
     </div>
   )
-}
- 
+} 
