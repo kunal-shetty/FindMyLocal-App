@@ -11,6 +11,7 @@ import { LoadingState } from "@/components/loading-state"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/auth-context"
 import { redirect } from "next/navigation"
+import { AdminFilters } from "@/components/admin-filters"
 
 export default function DiscoverPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -58,7 +59,7 @@ export default function DiscoverPage() {
               <SearchBar />
 
               {/* Filters */}
-              <Filters />
+              <AdminFilters />
 
               {/* Content */}
               {isLoading ? <LoadingState /> : <ServiceGrid />}
