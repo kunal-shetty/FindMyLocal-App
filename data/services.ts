@@ -32,6 +32,7 @@ export interface Service {
     languages: string[]
     phone: string
     whatsapp: string
+    delete:boolean
   }
   inclusions: string[]
 }
@@ -64,6 +65,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English", "Marathi"],
       phone: "+91 98765 43210",
       whatsapp: "+91 98765 43210",
+      delete:false
     },
     inclusions: ["Initial inspection", "Basic tools & equipment", "Minor repairs", "Post-service cleanup"],
   },
@@ -93,6 +95,7 @@ export const services: Service[] = [
       languages: ["English", "Hindi"],
       phone: "+91 98765 43211",
       whatsapp: "+91 98765 43211",
+      delete:false
     },
     inclusions: ["Weekly assessments", "Study material", "Doubt-solving sessions", "Progress reports"],
   },
@@ -102,7 +105,7 @@ export const services: Service[] = [
     category: "Electrician",
     location: "Bandra, Mumbai",
     availability: "Available",
-    status: "Approved",
+    status: "Rejected",
     rating: 4.7,
     distance: 1.8,
     tags: ["Licensed", "Same Day", "Commercial"],
@@ -123,6 +126,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English"],
       phone: "+91 98765 43212",
       whatsapp: "+91 98765 43212",
+      delete:false
     },
     inclusions: ["Safety inspection", "Quality materials", "Warranty on work", "Emergency support"],
   },
@@ -153,6 +157,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English", "Marathi"],
       phone: "+91 98765 43213",
       whatsapp: "+91 98765 43213",
+      delete:false
     },
     inclusions: ["Multi-point inspection", "Oil & filter change", "Brake check", "AC inspection"],
   },
@@ -183,6 +188,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English"],
       phone: "+91 98765 43214",
       whatsapp: "+91 98765 43214",
+      delete:false
     },
     inclusions: ["Color consultation", "Surface preparation", "Premium paints", "Furniture covering"],
   },
@@ -192,7 +198,7 @@ export const services: Service[] = [
     category: "Carpenter",
     location: "Kandivali, Mumbai",
     availability: "Available",
-    status: "Approved",
+    status: "Rejected",
     rating: 4.6,
     distance: 3.5,
     tags: ["Custom Furniture", "Modular", "Repair"],
@@ -213,6 +219,7 @@ export const services: Service[] = [
       languages: ["Hindi", "Marathi"],
       phone: "+91 98765 43215",
       whatsapp: "+91 98765 43215",
+      delete:true
     },
     inclusions: ["Free consultation", "Quality materials", "Custom designs", "Installation"],
   },
@@ -242,6 +249,7 @@ export const services: Service[] = [
       languages: ["English", "Hindi", "Malayalam"],
       phone: "+91 98765 43216",
       whatsapp: "+91 98765 43216",
+      delete:false
     },
     inclusions: ["Study material", "Mock tests", "Doubt sessions", "Performance tracking"],
   },
@@ -272,6 +280,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English"],
       phone: "+91 98765 43217",
       whatsapp: "+91 98765 43217",
+      delete:false
     },
     inclusions: ["Deep cleaning", "Gas check", "Filter cleaning", "Performance check"],
   },
@@ -281,7 +290,7 @@ export const services: Service[] = [
     category: "Mechanic",
     location: "Dadar, Mumbai",
     availability: "Offline",
-    status: "Approved",
+    status: "Rejected",
     rating: 4.3,
     distance: 2.1,
     tags: ["Bikes", "Scooters", "Doorstep"],
@@ -302,6 +311,7 @@ export const services: Service[] = [
       languages: ["Hindi", "Marathi"],
       phone: "+91 98765 43218",
       whatsapp: "+91 98765 43218",
+      delete:false
     },
     inclusions: ["Oil change", "Brake service", "Chain adjustment", "General checkup"],
   },
@@ -332,6 +342,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English", "Marathi"],
       phone: "+91 98765 43219",
       whatsapp: "+91 98765 43219",
+      delete:false
     },
     inclusions: ["Design consultation", "Demolition", "Waterproofing", "Premium fittings", "Tiling"],
   },
@@ -362,6 +373,7 @@ export const services: Service[] = [
       languages: ["Hindi", "English"],
       phone: "+91 98765 43220",
       whatsapp: "+91 98765 43220",
+      delete:false
     },
     inclusions: ["Kitchen cleaning", "Bathroom sanitization", "Floor mopping", "Waste disposal"],
   },
@@ -372,7 +384,7 @@ export const services: Service[] = [
     category: "Gardener",
     location: "Powai, Mumbai",
     availability: "Available",
-    status: "Approved",
+    status: "Rejected",
     rating: 4.5,
     distance: 4.0,
     tags: ["Lawn Care", "Plant Maintenance", "Seasonal"],
@@ -393,8 +405,102 @@ export const services: Service[] = [
       languages: ["Hindi", "Marathi"],
       phone: "+91 98765 43221",
       whatsapp: "+91 98765 43221",
+      delete:true
     },
     inclusions: ["Pruning", "Watering", "Soil treatment", "Waste removal"],
+  },
+  {
+    id: "13",
+    name: "Home Cleaning & Deep Cleaning Services",
+    category: "Cleaner",
+    location: "Bandra, Mumbai",
+    availability: "Available",
+    status: "Approved",
+    rating: 4.7,
+    distance: 2.8,
+    tags: ["Deep Clean", "Regular Service", "Eco-friendly"],
+    description:
+      "Professional home cleaning services including deep cleaning, carpet shampooing, and kitchen deep cleaning. We use eco-friendly products safe for families and pets.",
+    images: ["/services/cleaner-1.png", "/services/cleaner-2.jpg"],
+    pricing: {
+      type: "range",
+      min: 500,
+      max: 1800,
+      unit: "per session",
+    },
+    provider: {
+      name: "Clean Home Services",
+      experience: 7,
+      completedJobs: 520,
+      verified: true,
+      languages: ["Hindi", "English", "Gujarati"],
+      phone: "+91 98765 43222",
+      whatsapp: "+91 98765 43222",
+      delete: false
+    },
+    inclusions: ["Vacuuming", "Mopping", "Dusting", "Bathroom cleaning", "Kitchen sanitization"],
+  },
+  {
+    id: "14",
+    name: "Electrical Repair & Installation",
+    category: "Electrician",
+    location: "Dadar East, Mumbai",
+    availability: "Available",
+    status: "Approved",
+    rating: 4.8,
+    distance: 3.5,
+    tags: ["24x7", "Emergency", "Certified"],
+    description:
+      "Licensed electrician providing electrical repairs, maintenance, wiring, and LED lighting installation. All work done with safety certificates and guarantees.",
+    images: ["/services/electrician-1.jpg", "/services/electrician-2.webp"],
+    pricing: {
+      type: "range",
+      min: 400,
+      max: 1500,
+      unit: "per visit",
+    },
+    provider: {
+      name: "Rajesh Electrical Works",
+      experience: 12,
+      completedJobs: 650,
+      verified: true,
+      languages: ["Hindi", "Marathi", "English"],
+      phone: "+91 98765 43223",
+      whatsapp: "+91 98765 43223",
+      delete: false
+    },
+    inclusions: ["Troubleshooting", "Safety inspection", "Wire & cable supply", "Labor & installation"],
+  },
+  {
+    id: "15",
+    name: "Car Repair & Maintenance Services",
+    category: "Mechanic",
+    location: "Mahim, Mumbai",
+    availability: "Available",
+    status: "Approved",
+    rating: 4.6,
+    distance: 4.2,
+    tags: ["Engine Repair", "Servicing", "Quick Fix"],
+    description:
+      "Professional car mechanic offering engine repairs, general maintenance, brake servicing, and battery replacement. We use genuine spare parts and provide warranty on all repairs.",
+    images: ["/services/mechanic-1.webp", "/services/mechanic-2.jpg"],
+    pricing: {
+      type: "range",
+      min: 500,
+      max: 3000,
+      unit: "per job",
+    },
+    provider: {
+      name: "AutoCare Solutions",
+      experience: 11,
+      completedJobs: 720,
+      verified: true,
+      languages: ["Hindi", "Marathi", "English"],
+      phone: "+91 98765 43225",
+      whatsapp: "+91 98765 43225",
+      delete: false
+    },
+    inclusions: ["Free diagnostics", "Genuine parts", "Labor & installation", "Warranty card"],
   },
   
 ]

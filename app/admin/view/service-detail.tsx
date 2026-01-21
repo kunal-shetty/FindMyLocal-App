@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useSearchParams, notFound, useRouter } from "next/navigation"
-import { services } from "@/data/services"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useSearchParams, notFound, useRouter } from "next/navigation";
+import { services } from "@/data/services";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   MapPin,
   Navigation,
@@ -14,62 +14,208 @@ import {
   MessageCircle,
   Calendar,
   Clock,
-} from "lucide-react"
-import { useState } from "react"
+} from "lucide-react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Check, X, Trash2, ShieldCheck } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { useServices } from "@/context/service-context";
 
 export default function AdminServiceDetailPage() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const id = searchParams.get("id")
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const {
+    updateServiceStatus,
+    deleteService,
+    services: contextServices,
+  } = useServices();
+  const id = searchParams.get("id");
 
-  if (!id) notFound()
+  if (!id) notFound();
 
-  const service = services.find((s) => s.id === id)
-  if (!service) notFound()
+  const service = contextServices.find((s) => s.id === id);
+  if (!service) notFound();
 
-    const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00"]
+  const timeSlots = [
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+  ];
 
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  const minDate = tomorrow.toISOString().split("T")[0]
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
-  const [activeImage, setActiveImage] = useState(service.images[0])
-  const [isBookingOpen, setIsBookingOpen] = useState(false)
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [date, setDate] = useState("")
-  const [time, setTime] = useState("")
+  const [activeImage, setActiveImage] = useState(service.images[0]);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [alertDialog, setAlertDialog] = useState({
+    isOpen: false,
+    action: "",
+    title: "",
+    description: "",
+  });
+
+  const handleApprove = () => {
+    setAlertDialog({
+      isOpen: true,
+      action: "approve",
+      title: "Approve Service",
+      description:
+        "Are you sure you want to approve this service? This action cannot be undone.",
+    });
+  };
+
+  const handleReject = () => {
+    setAlertDialog({
+      isOpen: true,
+      action: "reject",
+      title: "Reject Service",
+      description:
+        "Are you sure you want to reject this service? The provider will be notified.",
+    });
+  };
+
+  const handleDelete = () => {
+    setAlertDialog({
+      isOpen: true,
+      action: "delete",
+      title: "Delete Service",
+      description:
+        "Are you sure you want to delete this service? This action cannot be undone.",
+    });
+  };
+
+  const handleVerify = () => {
+    setAlertDialog({
+      isOpen: true,
+      action: "verify",
+      title: "Verify Service",
+      description:
+        "Are you sure you want to verify this service? This will mark it as verified.",
+    });
+  };
+
+  const confirmAction = () => {
+    switch (alertDialog.action) {
+      case "approve":
+        updateServiceStatus(service.id, "Approved");
+        toast({
+          title: "Success",
+          description: "Service approved successfully",
+        });
+        break;
+      case "reject":
+        updateServiceStatus(service.id, "Rejected");
+        toast({
+          title: "Success",
+          description: "Service rejected successfully",
+        });
+        break;
+      case "delete":
+        deleteService(service.id);
+        toast({
+          title: "Success",
+          description: "Service deleted successfully",
+        });
+        setTimeout(() => router.push("/admin"), 500);
+        break;
+      case "verify":
+        toast({
+          title: "Success",
+          description: "Service verified successfully",
+        });
+        break;
+    }
+    setAlertDialog({ isOpen: false, action: "", title: "", description: "" });
+  };
 
   return (
     <>
       <div className="container max-w-7xl py-10 space-y-10">
-        {/* ===== TITLE ===== */}
-        <section className="space-y-4">
-          <h1 className="text-3xl md:text-4xl font-bold">
-            {service.name}
-          </h1>
-          <p className="text-muted-foreground">{service.category}</p>
+        {/* ===== TITLE WITH ACTION BUTTONS ===== */}
+        <section className="flex items-start justify-between gap-4">
+          <div className="space-y-4 flex-1">
+            <h1 className="text-3xl md:text-4xl font-bold">{service.name}</h1>
+            <p className="text-muted-foreground">{service.category}</p>
 
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              {service.location}
-            </span>
-            <span className="flex items-center gap-1">
-              <Navigation className="h-4 w-4" />
-              {service.distance} km away
-            </span>
-            <span className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-              {service.rating}
-            </span>
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                {service.location}
+              </span>
+              <span className="flex items-center gap-1">
+                <Navigation className="h-4 w-4" />
+                {service.distance} km away
+              </span>
+              <span className="flex items-center gap-1">
+                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                {service.rating}
+              </span>
+            </div>
+          </div>
+
+          {/* ACTION BUTTONS */}
+          <div className="flex flex-wrap gap-2 justify-end">
+            <Button
+              onClick={handleVerify}
+              size="sm"
+              variant="outline"
+              className="border-blue-500 text-blue-600 hover:bg-blue-50"
+            >
+              <ShieldCheck className="w-4 h-4 mr-2" />
+              Verify
+            </Button>
+            <Button
+              onClick={handleApprove}
+              size="sm"
+              variant="outline"
+              className="border-green-500 text-green-600 hover:bg-green-50"
+            >
+              <Check className="w-4 h-4 mr-2" />
+              Approve
+            </Button>
+            <Button
+              onClick={handleReject}
+              size="sm"
+              variant="outline"
+              className="border-red-500 text-red-600 hover:bg-red-50"
+            >
+              <X className="w-4 h-4 mr-2" />
+              Reject
+            </Button>
+            <Button
+              onClick={handleDelete}
+              size="sm"
+              variant="outline"
+              className="border-red-500 text-red-600 hover:bg-red-50"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </Button>
           </div>
         </section>
 
@@ -88,10 +234,11 @@ export default function AdminServiceDetailPage() {
               <button
                 key={img}
                 onClick={() => setActiveImage(img)}
-                className={`relative overflow-hidden rounded-xl border aspect-[6/3] ${activeImage === img
-                  ? "ring-2 ring-primary border-primary"
-                  : "hover:border-primary/50"
-                  }`}
+                className={`relative overflow-hidden rounded-xl border aspect-[6/3] ${
+                  activeImage === img
+                    ? "ring-2 ring-primary border-primary"
+                    : "hover:border-primary/50"
+                }`}
               >
                 <img
                   src={img}
@@ -134,16 +281,12 @@ export default function AdminServiceDetailPage() {
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg mb-3">
-                What’s included
-              </h3>
+              <h3 className="font-semibold text-lg mb-3">What’s included</h3>
               <ul className="grid sm:grid-cols-2 gap-3 text-sm">
                 {service.inclusions.map((item) => (
                   <li key={item} className="flex gap-2">
                     <span className="mt-1 h-1.5 w-1.5 bg-primary rounded-full" />
-                    <span className="text-muted-foreground">
-                      {item}
-                    </span>
+                    <span className="text-muted-foreground">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -165,9 +308,7 @@ export default function AdminServiceDetailPage() {
                 <User className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-semibold">
-                  {service.provider.name}
-                </p>
+                <p className="font-semibold">{service.provider.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {service.provider.experience}+ years experience
                 </p>
@@ -176,20 +317,12 @@ export default function AdminServiceDetailPage() {
 
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="font-medium">
-                  {service.provider.completedJobs}+
-                </p>
-                <p className="text-muted-foreground">
-                  Jobs done
-                </p>
+                <p className="font-medium">{service.provider.completedJobs}+</p>
+                <p className="text-muted-foreground">Jobs done</p>
               </div>
               <div>
-                <p className="font-medium">
-                  {service.rating} ★
-                </p>
-                <p className="text-muted-foreground">
-                  Rating
-                </p>
+                <p className="font-medium">{service.rating} ★</p>
+                <p className="text-muted-foreground">Rating</p>
               </div>
             </div>
 
@@ -200,12 +333,7 @@ export default function AdminServiceDetailPage() {
               </span>
             </div>
 
-            {service.provider.verified && (
-              <div className="flex items-center gap-2 text-green-600 text-sm">
-                <CheckCircle className="h-4 w-4" />
-                Verified provider
-              </div>
-            )}
+      
 
             {/* Contact Info */}
             <div className="pt-4 border-t space-y-3">
@@ -228,12 +356,10 @@ export default function AdminServiceDetailPage() {
                     WhatsApp
                   </a>
                 </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  asChild
-                >
-                  <a href={`tel:${service.provider.phone.replace(/[^0-9+]/g, "")}`}>
+                <Button variant="outline" className="w-full" asChild>
+                  <a
+                    href={`tel:${service.provider.phone.replace(/[^0-9+]/g, "")}`}
+                  >
                     <Phone className="w-4 h-4 mr-2" />
                     Call
                   </a>
@@ -241,104 +367,12 @@ export default function AdminServiceDetailPage() {
               </div>
             </div>
 
-            <Button
-              size="lg"
-              className="w-full"
-              onClick={() => setIsBookingOpen(true)}
-            >
-              Book Service
-            </Button>
+   
           </aside>
         </section>
       </div>
 
-      {/* ===== BOOKING MODAL ===== */}
-      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Book Service</DialogTitle>
-          </DialogHeader>
-
-          <div>
-  <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-    <Clock className="w-4 h-4" />
-    Select Time
-  </h3>
-
-  <div className="grid grid-cols-4 gap-2">
-    {timeSlots.map((slot) => (
-      <Button
-        key={slot}
-        variant={slot === time ? "default" : "outline"}
-        size="sm"
-        onClick={() => setTime(slot)}
-        className={cn(
-          "rounded-xl h-11",
-          slot === time && "bg-primary text-primary-foreground"
-        )}
-      >
-        {slot}
-      </Button>
-    ))}
-  </div>
-  
-</div>
-
-
-                  {/* Summary */}
-                  {date && time && (
-                    <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-                      <p className="text-sm text-muted-foreground mb-1">Booking Summary</p>
-                      <p className="font-medium">
-                        {new Date(date).toLocaleDateString("en-IN", {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}{" "}
-                        at {time}
-                      </p>
-                    </div>
-                  )}
-
-                  <div>
-                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      Select Date
-                    </h3>
-                    <input
-                      type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      className="w-full p-4 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none"
-                      min={minDate}
-                    />
-                  </div>
-                  <Button
-              className="w-full"
-              disabled={!date || !time}
-              onClick={() => {
-                // (optional) store booking details temporarily
-                sessionStorage.setItem(
-                  "booking",
-                  JSON.stringify({
-                    serviceId: service.id,
-                    date,
-                    time,
-                  })
-                )
-
-                setIsBookingOpen(false)
-
-                //  redirect to payments page with service id, date, and time
-                router.push(`/checkout?amt=${service.id}&date=${date}&time=${time}`)
-              }}
-            >
-              Proceed to Payment
-            </Button>
-        </DialogContent>
-      </Dialog>
 
     </>
-  )
+  );
 }
